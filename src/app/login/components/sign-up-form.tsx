@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 const registerSchema = z.object({
     name: z.string().trim().min(1, { message: "Esse cmapo é obrigatório" }).max(50, { message: "O nome é muito grande" }),
@@ -31,8 +32,13 @@ export default function SignUpForm() {
         },
     })
 
-    function handleSubmit(values: z.infer<typeof registerSchema>) {
-        console.log(values)
+    async function handleSubmit(values: z.infer<typeof registerSchema>) {
+        await authClient.signUp.email({
+            email: values.email,
+            password: values.password,
+            name: values.name,
+        })
+
     }
 
     return (

@@ -1,0 +1,1 @@
+initdb -D "D:\DEV\db" -U postgres -A password -W

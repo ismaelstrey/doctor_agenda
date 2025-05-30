@@ -13,8 +13,6 @@ export default function ButtonLogout() {
         setTimeout(() => {
             router.push("/login");
         }, 3000);
-
-
     }
     return (
         <div>

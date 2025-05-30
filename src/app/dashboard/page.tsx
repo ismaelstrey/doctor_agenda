@@ -1,8 +1,11 @@
-import { Button } from "@/components/ui/button";
+
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers";
 import ButtonLogout from "./components/user/ButtonExitSession";
 import { redirect } from "next/navigation";
+import { db } from "@/db";
+import { eq } from "drizzle-orm";
+import { userToClinicTable } from "@/db/schema";
 
 export default async function PageDashboard() {
 
@@ -11,7 +14,13 @@ export default async function PageDashboard() {
     });
     if (!session?.user) {
         redirect("/login");
-        return null;
+    }
+
+    const clinics = await db.query.userToClinicTable.findMany({
+        where: eq(userToClinicTable.userId, session?.user?.id)
+    });
+    if (clinics.length === 0) {
+        redirect("/clinic-form");
     }
 
     return (

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const registerSchema = z.object({
     name: z.string().trim().min(1, { message: "Esse cmapo é obrigatório" }).max(50, { message: "O nome é muito grande" }),
@@ -41,8 +42,11 @@ export default function SignUpForm() {
             name: values.name,
         }, {
             onSuccess: () => {
-                console.log("success");
+                toast.success("Conta criada com sucesso!");
                 router.push("/dashboard");
+            },
+            onError: (error) => {
+                toast.error(error.response.text);
             }
         })
 

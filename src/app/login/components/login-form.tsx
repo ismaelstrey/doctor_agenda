@@ -13,6 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
     email: z.string().trim().min(1, { message: "O email é obrigatório" }).email({ message: "O email é inválido" }),
@@ -20,6 +23,7 @@ const loginSchema = z.object({
 })
 
 export default function LoginForm() {
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -29,9 +33,25 @@ export default function LoginForm() {
         },
     })
 
-    function handleSubmit(values: z.infer<typeof loginSchema>) {
-        console.log(values)
+    async function handleSubmit(values: z.infer<typeof loginSchema>) {
+        await authClient.signIn.email(
+            {
+                email: values.email,
+                password: values.password,
+            },
+            {
+                onSuccess: () => {
+                    toast.success("Login realizado com sucesso");
+                    router.push("/dashboard");
+                }, onError: () => {
+                    toast.error("Ocorreu um erro ao realizar o login, verifique o email ou senha");
+                }
+            }
+        );
+
     }
+
+
 
     return (
         <Card>

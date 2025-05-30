@@ -14,6 +14,8 @@ import z from "zod";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation";
 
 const registerSchema = z.object({
     name: z.string().trim().min(1, { message: "Esse cmapo é obrigatório" }).max(50, { message: "O nome é muito grande" }),
@@ -22,7 +24,7 @@ const registerSchema = z.object({
 })
 
 export default function SignUpForm() {
-
+    const router = useRouter();
     const form = useForm<z.infer<typeof registerSchema>>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -37,6 +39,11 @@ export default function SignUpForm() {
             email: values.email,
             password: values.password,
             name: values.name,
+        }, {
+            onSuccess: () => {
+                console.log("success");
+                router.push("/dashboard");
+            }
         })
 
     }
@@ -94,7 +101,9 @@ export default function SignUpForm() {
                         />
                     </CardContent>
                     <CardFooter>
-                        <Button className="w-full" type="submit">Criar conta</Button>
+                        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>Criar conta
+                            {form.formState.isSubmitting && <Loader2 className="animate-spin" />}
+                        </Button>
                     </CardFooter>
                 </form>
             </Form>

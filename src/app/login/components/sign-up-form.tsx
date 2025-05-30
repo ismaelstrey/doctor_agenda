@@ -45,8 +45,8 @@ export default function SignUpForm() {
                 toast.success("Conta criada com sucesso!");
                 router.push("/dashboard");
             },
-            onError: (error) => {
-                toast.error(error.response.text);
+            onError: (ctx) => {
+                toast.error(ctx.error.code === "USER_ALREADY_EXISTS" ? "Esse email já está em uso" : "Ocorreu um erro ao criar a conta");
             }
         })
 

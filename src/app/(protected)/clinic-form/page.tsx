@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import z from "zod"
 import { CardContent, CardFooter } from "@/components/ui/card"
-import { createClinic } from "../../actions/create-clinic"
+import { createClinic } from "../../../actions/create-clinic"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
@@ -50,7 +50,6 @@ export default function ClinicFormPage() {
             toast.error("Erro ao cadastrar clinica")
         }
     }
-
     return (
         <Dialog open>
             <form>

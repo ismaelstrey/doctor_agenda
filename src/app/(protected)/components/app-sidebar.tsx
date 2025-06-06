@@ -2,6 +2,7 @@ import { CalendarDays, LayoutDashboard, Stethoscope, UsersRound } from "lucide-r
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
@@ -12,6 +13,12 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import Image from "next/image"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+import ButtonExit from "./button-exit"
 
 const items = [
     {
@@ -37,7 +44,16 @@ const items = [
 
 ]
 
-export function AppSidebar() {
+export async function AppSidebar() {
+
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+    if (!session?.user) {
+        redirect("/login");
+    }
+  
+
     return (
         <Sidebar>
             <SidebarHeader className="border-b p-4">
@@ -68,6 +84,25 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter className="justify-center mb-4 border-t">
+                <SidebarContent>                   
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <SidebarMenuButton>
+                                    {session?.user?.email}
+             
+                            </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>
+                          <SidebarMenuButton asChild>
+                          <ButtonExit/>
+                            </SidebarMenuButton>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarContent>                
+            </SidebarFooter>
         </Sidebar>
     )
 }
